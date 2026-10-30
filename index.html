@@ -66,7 +66,11 @@
             <div class="champ__boite">
               <select class="champ__controle champ__controle--liste" id="quartier" name="quartier">
                 <option value="">Tous les quartiers</option>
-                <!-- Une option par quartier, fournie par l'API -->
+                <option value="Centre-ville">Centre-ville</option>
+                <option value="Les Tilleuls">Les Tilleuls</option>
+                <option value="Bellevue">Bellevue</option>
+                <option value="Port-Neuf">Port-Neuf</option>
+                <option value="Saint-Martin">Saint-Martin</option>
               </select>
               <span class="icone icone--chevron-bas champ__icone champ__icone--fin" aria-hidden="true"></span>
             </div>
@@ -82,27 +86,27 @@
             <legend class="groupe__legende">Équipements</legend>
             <div class="puces">
               <label class="puce">
-                <input class="puce__entree" type="checkbox" name="equipements" value="pmr">
+                <input class="puce__entree" type="checkbox" name="equipements" value="PMR">
                 <span class="puce__case"><span class="icone icone--coche" aria-hidden="true"></span></span>
                 PMR
               </label>
               <label class="puce">
-                <input class="puce__entree" type="checkbox" name="equipements" value="cuisine">
+                <input class="puce__entree" type="checkbox" name="equipements" value="CUISINE">
                 <span class="puce__case"><span class="icone icone--coche" aria-hidden="true"></span></span>
                 Cuisine
               </label>
               <label class="puce">
-                <input class="puce__entree" type="checkbox" name="equipements" value="vidéoprojecteur">
+                <input class="puce__entree" type="checkbox" name="equipements" value="VIDEOPROJECTEUR">
                 <span class="puce__case"><span class="icone icone--coche" aria-hidden="true"></span></span>
                 Vidéoprojecteur
               </label>
               <label class="puce">
-                <input class="puce__entree" type="checkbox" name="equipements" value="scène">
+                <input class="puce__entree" type="checkbox" name="equipements" value="SCENE">
                 <span class="puce__case"><span class="icone icone--coche" aria-hidden="true"></span></span>
                 Scène
               </label>
               <label class="puce">
-                <input class="puce__entree" type="checkbox" name="equipements" value="parking">
+                <input class="puce__entree" type="checkbox" name="equipements" value="PARKING">
                 <span class="puce__case"><span class="icone icone--coche" aria-hidden="true"></span></span>
                 Parking
               </label>
@@ -111,39 +115,24 @@
         </div>
       </form>
 
-      <p class="compteur" role="status">0 salles</p>
+      <p class="compteur" id="compteur" role="status">Chargement des salles…</p>
 
       <section aria-label="Liste des salles">
-        <ul class="salles">
-          <!-- Carte modèle : à répéter pour chaque salle renvoyée par l'API -->
-          <li>
-            <article class="carte">
-              <div class="carte__visuel" aria-hidden="true">
-                <span class="icone icone--batiment"></span>
-              </div>
-              <div class="carte__corps">
-                <h3 class="carte__titre">Nom de la salle</h3>
-                <ul class="carte__infos">
-                  <li class="carte__info"><span class="icone icone--lieu" aria-hidden="true"></span>Quartier</li>
-                  <li class="carte__info"><span class="icone icone--personnes" aria-hidden="true"></span>0 personnes
-                  </li>
-                </ul>
-                <div class="carte__pied">
-                  <ul class="carte__etiquettes" aria-label="Équipements">
-                    <!-- Une étiquette par équipement -->
-                    <li class="etiquette">Équipement</li>
-                  </ul>
-                  <p class="carte__tarif">
-                    <span>Tarif pour les associations</span>
-                    <span>Tarif hors association</span>
-                  </p>
-                  <a class="bouton bouton--secondaire" href="salle.html">Voir la salle<span class="sr-only"> : Nom de la
-                      salle</span></a>
-                </div>
-              </div>
-            </article>
-          </li>
-        </ul>
+        <ul class="salles" id="liste-salles" aria-busy="true"></ul>
+
+        <div class="etat" id="etat-erreur" role="alert" hidden>
+          <span class="etat__icone icone icone--batiment" aria-hidden="true"></span>
+          <p class="etat__titre">Les salles n'ont pas pu être chargées</p>
+          <p class="etat__texte">Un problème est survenu. Vérifiez votre connexion puis réessayez.</p>
+          <button class="bouton bouton--primaire" type="button" id="bouton-reessayer">Réessayer</button>
+        </div>
+
+        <div class="etat" id="etat-vide" hidden>
+          <span class="etat__icone icone icone--batiment" aria-hidden="true"></span>
+          <p class="etat__titre">Aucune salle ne correspond à vos critères</p>
+          <p class="etat__texte">Essayez de retirer un filtre ou de réduire la capacité minimale.</p>
+          <button class="bouton bouton--primaire" type="button" id="bouton-reinitialiser">Réinitialiser les filtres</button>
+        </div>
       </section>
     </div>
   </main>
@@ -160,8 +149,58 @@
       </ul>
     </div>
   </footer>
-</body>
 
-<script src="main.js"></script>
+  <!-- Modèle de carte : cloné par main.js pour chaque salle renvoyée par l'API -->
+  <template id="modele-carte">
+    <li>
+      <article class="carte">
+        <div class="carte__visuel" aria-hidden="true">
+          <span class="icone icone--batiment"></span>
+        </div>
+        <div class="carte__corps">
+          <h3 class="carte__titre" data-champ="nom">Nom de la salle</h3>
+          <ul class="carte__infos">
+            <li class="carte__info">
+              <span class="icone icone--lieu" aria-hidden="true"></span>
+              <span data-champ="quartier">Quartier</span>
+            </li>
+            <li class="carte__info">
+              <span class="icone icone--personnes" aria-hidden="true"></span>
+              <span data-champ="capacite">0 personnes</span>
+            </li>
+          </ul>
+          <div class="carte__pied">
+            <ul class="carte__etiquettes" aria-label="Équipements" data-champ="equipements">
+              <li class="etiquette">Équipement</li>
+            </ul>
+            <p class="carte__tarif">
+              <span>Gratuit pour les associations de Montvert</span>
+              <span data-champ="tarif">0 €/h hors Montvert</span>
+            </p>
+            <a class="bouton bouton--secondaire" href="/salles/" data-champ="lien">Voir la salle<span class="sr-only"
+                data-champ="precision"></span></a>
+          </div>
+        </div>
+      </article>
+    </li>
+  </template>
+
+  <!-- Modèle de carte squelette : affiché pendant le chargement -->
+  <template id="modele-squelette">
+    <li aria-hidden="true">
+      <div class="carte carte--squelette">
+        <div class="carte__visuel squelette"></div>
+        <div class="carte__corps">
+          <div class="squelette squelette--titre"></div>
+          <div class="squelette squelette--ligne"></div>
+          <div class="squelette squelette--ligne"></div>
+          <div class="squelette squelette--bouton"></div>
+        </div>
+      </div>
+    </li>
+  </template>
+
+  <script type="module" src="main.js"></script>
+</body>
 
 </html>
