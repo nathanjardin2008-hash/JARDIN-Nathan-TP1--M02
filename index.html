@@ -1,37 +1,165 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Agora</title>
-    <link rel="icon" type="image/svg+xml" href="/icones/batiment.svg" />
 
-    <!-- Police Public Sans (Google Fonts), graisses 400, 600 et 700 -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap"
-    />
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trouver une salle – Agora, les salles municipales de Montvert</title>
+  <meta name="description"
+    content="Trouvez et réservez une salle municipale à Montvert : filtrez par quartier, capacité et équipements.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
 
-    <link rel="stylesheet" href="/style.css" />
-    <script type="module" src="/main.js"></script>
-  </head>
-  <body>
-    <!--
-      Écran à intégrer : le catalogue des salles d'Agora.
-      Maquettes : maquettes/Catalogue-mobile.png et maquettes/Catalogue-desktop.png.
-      Valeurs (couleurs, tailles, espacements, états) : maquettes/Composants.png.
+<body>
+  <a class="lien-evitement" href="#contenu">Aller au contenu</a>
 
-      De haut en bas, la maquette montre :
-        - l'en-tête (logo, navigation, connexion),
-        - le titre de la page,
-        - le panneau de filtres,
-        - le nombre de salles,
-        - la liste des cartes de salles,
-        - le pied de page.
+  <header class="entete">
+    <div class="conteneur entete__interieur">
+      <button class="entete__menu" type="button" aria-label="Menu" aria-expanded="false" aria-controls="navigation">
+        <span class="icone icone--menu" aria-hidden="true"></span>
+      </button>
 
-      Les icônes de la maquette sont dans public/icones/ (SVG, trait de 2 px).
-    -->
-  </body>
+      <a class="logo" href="index.html" aria-label="Agora, accueil">
+        <span class="icone icone--batiment" aria-hidden="true"></span>
+        Agora
+      </a>
+
+      <nav class="navigation" id="navigation" aria-label="Navigation principale">
+        <ul class="navigation__liste">
+          <li><a class="navigation__lien" href="index.html" aria-current="page">Les salles</a></li>
+          <li><a class="navigation__lien" href="demandes.html">Mes demandes</a></li>
+        </ul>
+      </nav>
+
+      <a class="entete__connexion" href="connexion.html">
+        <span class="icone icone--utilisateur" aria-hidden="true"></span>
+        <span class="entete__connexion-texte">Connexion</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="contenu">
+    <div class="conteneur">
+      <h1 class="page-titre">Trouver une salle</h1>
+
+      <form class="filtres" role="search" aria-labelledby="titre-filtres" action="index.html" method="get">
+        <h2 class="filtres__titre" id="titre-filtres">
+          <span class="icone icone--filtre" aria-hidden="true"></span>
+          Filtres
+        </h2>
+
+        <div class="filtres__grille">
+          <div class="champ filtres__recherche">
+            <label class="sr-only" for="recherche">Rechercher une salle</label>
+            <div class="champ__boite">
+              <span class="icone icone--recherche champ__icone champ__icone--debut" aria-hidden="true"></span>
+              <input class="champ__controle champ__controle--avec-icone-debut" type="search" id="recherche" name="q"
+                placeholder="Rechercher une salle" autocomplete="off">
+            </div>
+          </div>
+
+          <div class="champ">
+            <label class="champ__etiquette" for="quartier">Quartier</label>
+            <div class="champ__boite">
+              <select class="champ__controle champ__controle--liste" id="quartier" name="quartier">
+                <option value="">Tous les quartiers</option>
+                <!-- Une option par quartier, fournie par l'API -->
+              </select>
+              <span class="icone icone--chevron-bas champ__icone champ__icone--fin" aria-hidden="true"></span>
+            </div>
+          </div>
+
+          <div class="champ">
+            <label class="champ__etiquette" for="capacite">Capacité minimale</label>
+            <input class="champ__controle" type="number" id="capacite" name="capacite" min="1" inputmode="numeric"
+              placeholder="Ex. 50">
+          </div>
+
+          <fieldset class="groupe filtres__equipements">
+            <legend class="groupe__legende">Équipements</legend>
+            <div class="puces">
+              <label class="puce">
+                <input class="puce__entree" type="checkbox" name="equipements" value="pmr">
+                <span class="puce__case"><span class="icone icone--coche" aria-hidden="true"></span></span>
+                PMR
+              </label>
+              <label class="puce">
+                <input class="puce__entree" type="checkbox" name="equipements" value="cuisine">
+                <span class="puce__case"><span class="icone icone--coche" aria-hidden="true"></span></span>
+                Cuisine
+              </label>
+              <label class="puce">
+                <input class="puce__entree" type="checkbox" name="equipements" value="vidéoprojecteur">
+                <span class="puce__case"><span class="icone icone--coche" aria-hidden="true"></span></span>
+                Vidéoprojecteur
+              </label>
+              <label class="puce">
+                <input class="puce__entree" type="checkbox" name="equipements" value="scène">
+                <span class="puce__case"><span class="icone icone--coche" aria-hidden="true"></span></span>
+                Scène
+              </label>
+              <label class="puce">
+                <input class="puce__entree" type="checkbox" name="equipements" value="parking">
+                <span class="puce__case"><span class="icone icone--coche" aria-hidden="true"></span></span>
+                Parking
+              </label>
+            </div>
+          </fieldset>
+        </div>
+      </form>
+
+      <p class="compteur" role="status">0 salles</p>
+
+      <section aria-label="Liste des salles">
+        <ul class="salles">
+          <!-- Carte modèle : à répéter pour chaque salle renvoyée par l'API -->
+          <li>
+            <article class="carte">
+              <div class="carte__visuel" aria-hidden="true">
+                <span class="icone icone--batiment"></span>
+              </div>
+              <div class="carte__corps">
+                <h3 class="carte__titre">Nom de la salle</h3>
+                <ul class="carte__infos">
+                  <li class="carte__info"><span class="icone icone--lieu" aria-hidden="true"></span>Quartier</li>
+                  <li class="carte__info"><span class="icone icone--personnes" aria-hidden="true"></span>0 personnes
+                  </li>
+                </ul>
+                <div class="carte__pied">
+                  <ul class="carte__etiquettes" aria-label="Équipements">
+                    <!-- Une étiquette par équipement -->
+                    <li class="etiquette">Équipement</li>
+                  </ul>
+                  <p class="carte__tarif">
+                    <span>Tarif pour les associations</span>
+                    <span>Tarif hors association</span>
+                  </p>
+                  <a class="bouton bouton--secondaire" href="salle.html">Voir la salle<span class="sr-only"> : Nom de la
+                      salle</span></a>
+                </div>
+              </div>
+            </article>
+          </li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <footer class="pied">
+    <div class="conteneur pied__interieur">
+      <div>
+        <p class="pied__nom">Agora – Les salles municipales de Montvert</p>
+        <p class="pied__contact">Ville de Montvert – Service Vie associative – 02 43 00 00 00</p>
+      </div>
+      <ul class="pied__liens">
+        <li><a href="accessibilite.html">Accessibilité</a></li>
+        <li><a href="mentions-legales.html">Mentions légales</a></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+
 </html>
