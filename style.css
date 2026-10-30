@@ -304,9 +304,10 @@ select {
 
 .entete__interieur {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--espace-1);
-  min-height: 60px;
+  min-height: 64px;
 }
 
 .entete__menu,
@@ -407,8 +408,15 @@ select {
   }
 }
 
-/* Sur mobile, « Connexion » n'est qu'une icône */
+/* Sur mobile, « Connexion » n'est qu'une icône, et la navigation se déplie sous l'en-tête */
 @media (max-width: 767px) {
+  .navigation--ouverte {
+    display: block;
+    order: 3;
+    flex-basis: 100%;
+    padding-bottom: var(--espace-1);
+  }
+
   .entete__connexion-texte {
     position: absolute;
     width: 1px;
@@ -889,5 +897,85 @@ select {
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;
+    animation: none !important;
   }
+}
+
+/* ==========================================================================
+   États de l'écran : chargement (squelettes), erreur, liste vide
+   ========================================================================== */
+
+[hidden] {
+  display: none !important;
+}
+
+.squelette {
+  background: var(--couleur-fond-neutre);
+  animation: pulsation 1.5s ease-in-out infinite;
+}
+
+.carte__visuel.squelette {
+  background: var(--couleur-fond-neutre);
+}
+
+.squelette--titre {
+  height: var(--interligne-h3);
+  width: 70%;
+  border-radius: var(--rayon-etiquette);
+}
+
+.squelette--ligne {
+  height: var(--interligne-petit);
+  width: 50%;
+  border-radius: var(--rayon-etiquette);
+}
+
+.squelette--bouton {
+  height: var(--hauteur-bouton);
+  margin-top: auto;
+  border-radius: var(--rayon-bouton);
+}
+
+@keyframes pulsation {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.etat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espace-1);
+  padding: var(--espace-4) var(--espace-2);
+  background: var(--couleur-surface);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-carte);
+  box-shadow: var(--ombre);
+  text-align: center;
+}
+
+.etat__icone {
+  width: 4rem;
+  height: 4rem;
+  color: var(--couleur-primaire);
+}
+
+#etat-erreur .etat__titre {
+  color: var(--couleur-erreur);
+}
+
+.etat__titre {
+  font-size: var(--taille-h3);
+  line-height: var(--interligne-h3);
+  font-weight: var(--graisse-semi-grasse);
+}
+
+.etat__texte {
+  max-width: 40ch;
+  color: var(--couleur-texte-attenue);
+}
+
+.etat .bouton {
+  margin-top: var(--espace-1);
 }
